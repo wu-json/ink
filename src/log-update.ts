@@ -25,47 +25,9 @@ const create = (stream: Writable, {showCursor = false} = {}): LogUpdate => {
 			return;
 		}
 
-		const newLines = output.split('\n')
-
-		const prevLinesCount = previousLines.length
-		const newLinesCount = newLines.length
-
-		if (newLinesCount == 0){
-			// Just clear everything
-			stream.write(ansiEscapes.eraseLines(prevLinesCount))
-			previousLines = []
-			previousOutput = ''
-			return
-		}
-		if (prevLinesCount == 0){
-			// Clear and write all
-			stream.write(ansiEscapes.eraseLines(prevLinesCount) + output)
-			previousLines = newLines
-			previousOutput = output
-			return
-		}
-
-		// Incremental render
-		if (newLinesCount < prevLinesCount) {
-			// Erase and move up
-			stream.write(ansiEscapes.eraseLines(prevLinesCount - newLinesCount))
-			stream.write(ansiEscapes.cursorUp(newLinesCount))
-		}
-
-		for (let i = 0; i < newLinesCount; i++) {
-			if (i <= Math.max(prevLinesCount - 1, 0)){
-				stream.write(ansiEscapes.eraseLine + newLines[i] + '\n');
-				stream.write(ansiEscapes.cursorNextLine)
-				continue
-			}
-
-			// write new line; no need to clear (already cleared by someone else)
-			stream.write(newLines[i] + '\n');
-			stream.write(ansiEscapes.cursorNextLine)
-		}
-
 		previousOutput = output;
-		previousLines = newLines
+		stream.write(ansiEscapes.eraseLines(previousLines.length) + output);
+		previousLines = output.split('\n');
 	};
 
 	render.clear = () => {
