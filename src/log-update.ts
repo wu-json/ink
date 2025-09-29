@@ -9,6 +9,8 @@ export type LogUpdate = {
 	(str: string): void;
 };
 
+const FRAME_DELIMETER = "\x1b_ink_frm\x1b\\"
+
 const create = (stream: Writable, {showCursor = false} = {}): LogUpdate => {
 	let previousLines: string[] = [];
 	let previousOutput = '';
@@ -30,7 +32,7 @@ const create = (stream: Writable, {showCursor = false} = {}): LogUpdate => {
 		const lineCount = lines.length;
 
 		if (lineCount === 0 || previousLineCount === 0) {
-			stream.write(ansiEscapes.eraseLines(previousLineCount) + output);
+			stream.write(ansiEscapes.eraseLines(previousLineCount) + output + FRAME_DELIMETER);
 			previousOutput = output;
 			previousLines = lines;
 			return;
@@ -55,6 +57,8 @@ const create = (stream: Writable, {showCursor = false} = {}): LogUpdate => {
 
 			stream.write(ansiEscapes.eraseLine + lines[i] + '\n');
 		}
+
+		stream.write(FRAME_DELIMETER)
 
 		previousOutput = output;
 		previousLines = lines;
