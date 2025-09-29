@@ -10,6 +10,7 @@ import stripAnsi from 'strip-ansi';
 import boxen from 'boxen';
 import delay from 'delay';
 import {render, Box, Text} from '../src/index.js';
+import { frameDelimeter } from '../src/log-update.js';
 import createStdout from './helpers/create-stdout.js';
 
 const require = createRequire(import.meta.url);
@@ -125,7 +126,7 @@ test.serial('erase screen where state changes', async t => {
 	const ps = term('erase-with-state-change', ['4']);
 	await ps.waitForExit();
 
-	const secondFrame = ps.output.split(ansiEscapes.eraseLines(3))[1];
+	const secondFrame = ps.output.split(frameDelimeter)[1];
 
 	for (const letter of ['A', 'B', 'C']) {
 		t.false(secondFrame?.includes(letter));
