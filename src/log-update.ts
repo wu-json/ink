@@ -37,7 +37,7 @@ const create = (stream: Writable, {showCursor = false} = {}): LogUpdate => {
 		}
 
 		for (let i = 0; i < newLinesCount; i++) {
-			if (i < Math.max(prevLinesCount - 1, 0)){
+			if (i <= Math.max(prevLinesCount - 1, 0)){
 				stream.write(ansiEscapes.eraseLine + newLines[i] + '\n');
 				stream.write(ansiEscapes.cursorNextLine)
 				continue
