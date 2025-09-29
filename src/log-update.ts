@@ -9,7 +9,11 @@ export type LogUpdate = {
 	(str: string): void;
 };
 
-const FRAME_DELIMETER = "\x1b_ink_frm\x1b\\"
+/*
+ * This is an OSC delimeter we print at the end of each render. This makes identifying frames
+ * convenient for tests.
+ */
+export const FRAME_DELIMETER = "\x1b_ink_frm\x1b\\"
 
 const create = (stream: Writable, {showCursor = false} = {}): LogUpdate => {
 	let previousLines: string[] = [];
