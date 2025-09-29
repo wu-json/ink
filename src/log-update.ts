@@ -27,8 +27,17 @@ const create = (stream: Writable, {showCursor = false} = {}): LogUpdate => {
 
 		const previousLinesCount = previousLines.length
 		const lines = output.split('\n');
+		const linesCount = lines.length;
 
 
+		if (linesCount === 0 || previousLinesCount === 0) {
+			stream.write(ansiEscapes.eraseLines(previousLinesCount) + output);
+			previousOutput = output;
+			previousLines = lines;
+			return
+		}
+
+		// TODO(wu-json): incremental render
 		stream.write(ansiEscapes.eraseLines(previousLinesCount) + output);
 		previousOutput = output;
 		previousLines = lines;
