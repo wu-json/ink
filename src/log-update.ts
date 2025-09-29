@@ -27,37 +27,29 @@ const create = (stream: Writable, {showCursor = false} = {}): LogUpdate => {
 
 		const newLines = output.split('\n')
 
-		const previousLinesCount = previousLines.length
+		const prevLinesCount = previousLines.length
 		const newLinesCount = newLines.length
 
+
+		if (newLinesCount < prevLinesCount) {
+			// Erase and move up
+			stream.write(ansiEscapes.eraseLines(prevLinesCount - newLinesCount))
+			stream.write(ansiEscapes.cursorUp(prevLinesCount - newLinesCount))
+		}
+
 		for (let i = 0; i < newLinesCount; i++) {
-			if (i > Math.max(previousLinesCount - 1)){
-				// write new line; no need to clear
-				stream.write(output + '\n');
-				stream.write(ansiEscapes.cursorNextLine)
-				continue
-			}
-
-			// only write if a new line
-			if (previousLines[i] !== newLines[i]) {
-				stream.write(output + '\n');
+			if (i < Math.max(prevLinesCount - 1, 0)){
+				stream.write(ansiEscapes.eraseLine + newLines[i] + '\n');
 				stream.write(ansiEscapes.cursorNextLine)
 			}
-		}
 
-		if (newLinesCount < previousLinesCount) {
-			// clear the remaining lines
-			for (let i = 0; i < previousLinesCount - newLinesCount; i++) {
-				stream.write(ansiEscapes.eraseLine);
-				stream.write(ansiEscapes.cursorUp());
-			}
+			// write new line; no need to clear (already cleared by someone else)
+			stream.write(newLines[i] + '\n');
+			stream.write(ansiEscapes.cursorNextLine)
 		}
-
-		// Otherwise, we do incremental rendering bb
 
 		previousOutput = output;
-		stream.write(ansiEscapes.eraseLines(previousLines.length) + output);
-		previousLines.length = output.split('\n').length;
+		previousLines = newLines
 	};
 
 	render.clear = () => {
