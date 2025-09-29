@@ -30,7 +30,6 @@ const create = (stream: Writable, {showCursor = false} = {}): LogUpdate => {
 		const prevLinesCount = previousLines.length
 		const newLinesCount = newLines.length
 
-
 		if (newLinesCount < prevLinesCount) {
 			// Erase and move up
 			stream.write(ansiEscapes.eraseLines(prevLinesCount - newLinesCount))
