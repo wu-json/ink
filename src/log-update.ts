@@ -10,7 +10,7 @@ export type LogUpdate = {
 };
 
 const create = (stream: Writable, {showCursor = false} = {}): LogUpdate => {
-	let previousLines = [];
+	let previousLines: string[] = [];
 	let previousOutput = '';
 	let hasHiddenCursor = false;
 
