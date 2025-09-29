@@ -41,11 +41,15 @@ const create = (stream: Writable, {showCursor = false} = {}): LogUpdate => {
 			stream.write(ansiEscapes.eraseLines(previousLineCount - lineCount) + ansiEscapes.cursorUp(lineCount - 1))
 		}
 
+		for (let i = 0; i < lineCount; i++) {
+			if (lines[i] === previousLines[i]) {
+				stream.write(ansiEscapes.cursorNextLine)
+				continue
+			}
+			const isLastLine = i === lineCount - 1
+			stream.write(ansiEscapes.eraseLine + lines[i] + '\n' + (isLastLine ? ansiEscapes.cursorNextLine : ''))
+		}
 
-
-
-		// TODO(wu-json): incremental render
-		stream.write(ansiEscapes.eraseLines(previousLineCount) + output);
 		previousOutput = output;
 		previousLines = lines;
 	};
