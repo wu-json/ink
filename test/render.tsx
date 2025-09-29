@@ -10,7 +10,7 @@ import stripAnsi from 'strip-ansi';
 import boxen from 'boxen';
 import delay from 'delay';
 import {render, Box, Text} from '../src/index.js';
-import { frameDelimeter } from '../src/log-update.js';
+import {frameDelimeter} from '../src/log-update.js';
 import createStdout from './helpers/create-stdout.js';
 
 const require = createRequire(import.meta.url);
