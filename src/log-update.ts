@@ -38,8 +38,10 @@ const create = (stream: Writable, {showCursor = false} = {}): LogUpdate => {
 
 		// Clear any lines if necessary (only if output has less lines than previous)
 		if (lineCount < previousLineCount) {
-			stream.write(ansiEscapes.eraseLines(previousLineCount - lineCount) + ansiEscapes.cursorUp())
+			stream.write(ansiEscapes.eraseLines(previousLineCount - lineCount) + ansiEscapes.cursorUp(lineCount))
 		}
+
+
 
 
 		// TODO(wu-json): incremental render
