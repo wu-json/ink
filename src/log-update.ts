@@ -42,6 +42,7 @@ const create = (stream: Writable, {showCursor = false} = {}): LogUpdate => {
 		}
 
 		for (let i = 0; i < lineCount; i++) {
+			// Do not write line if content did not change
 			if (lines[i] === previousLines[i]) {
 				stream.write(ansiEscapes.cursorNextLine)
 				continue
