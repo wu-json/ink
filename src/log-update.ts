@@ -25,6 +25,8 @@ const create = (stream: Writable, {showCursor = false} = {}): LogUpdate => {
 			return;
 		}
 
+		// Otherwise, we do incremental compilation bb
+
 		previousOutput = output;
 		stream.write(ansiEscapes.eraseLines(previousLines.length) + output);
 		previousLines.length = output.split('\n').length;
