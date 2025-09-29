@@ -34,13 +34,14 @@ const create = (stream: Writable, {showCursor = false} = {}): LogUpdate => {
 		if (newLinesCount < prevLinesCount) {
 			// Erase and move up
 			stream.write(ansiEscapes.eraseLines(prevLinesCount - newLinesCount))
-			stream.write(ansiEscapes.cursorUp(prevLinesCount - newLinesCount))
+			stream.write(ansiEscapes.cursorUp(newLinesCount))
 		}
 
 		for (let i = 0; i < newLinesCount; i++) {
 			if (i < Math.max(prevLinesCount - 1, 0)){
 				stream.write(ansiEscapes.eraseLine + newLines[i] + '\n');
 				stream.write(ansiEscapes.cursorNextLine)
+				continue
 			}
 
 			// write new line; no need to clear (already cleared by someone else)
