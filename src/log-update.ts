@@ -25,10 +25,12 @@ const create = (stream: Writable, {showCursor = false} = {}): LogUpdate => {
 			return;
 		}
 
+		const previousLinesCount = previousLines.length
 		const lines = output.split('\n');
 
+
+		stream.write(ansiEscapes.eraseLines(previousLinesCount) + output);
 		previousOutput = output;
-		stream.write(ansiEscapes.eraseLines(previousLines.length) + output);
 		previousLines = lines;
 	};
 
