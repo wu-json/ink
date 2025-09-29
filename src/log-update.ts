@@ -25,6 +25,34 @@ const create = (stream: Writable, {showCursor = false} = {}): LogUpdate => {
 			return;
 		}
 
+		const newLines = output.split('\n')
+
+		const previousLinesCount = previousLines.length
+		const newLinesCount = newLines.length
+
+		for (let i = 0; i < newLinesCount; i++) {
+			if (i > Math.max(previousLinesCount - 1)){
+				// write new line; no need to clear
+				stream.write(output + '\n');
+				stream.write(ansiEscapes.cursorNextLine)
+				continue
+			}
+
+			// only write if a new line
+			if (previousLines[i] !== newLines[i]) {
+				stream.write(output + '\n');
+				stream.write(ansiEscapes.cursorNextLine)
+			}
+		}
+
+		if (newLinesCount < previousLinesCount) {
+			// clear the remaining lines
+			for (let i = 0; i < previousLinesCount - newLinesCount; i++) {
+				stream.write(ansiEscapes.eraseLine);
+				stream.write(ansiEscapes.cursorUp());
+			}
+		}
+
 		// Otherwise, we do incremental rendering bb
 
 		previousOutput = output;
