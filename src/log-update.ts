@@ -10,7 +10,7 @@ export type LogUpdate = {
 };
 
 const create = (stream: Writable, {showCursor = false} = {}): LogUpdate => {
-	let previousLineCount = 0;
+	let previousLines = [];
 	let previousOutput = '';
 	let hasHiddenCursor = false;
 
@@ -26,19 +26,19 @@ const create = (stream: Writable, {showCursor = false} = {}): LogUpdate => {
 		}
 
 		previousOutput = output;
-		stream.write(ansiEscapes.eraseLines(previousLineCount) + output);
-		previousLineCount = output.split('\n').length;
+		stream.write(ansiEscapes.eraseLines(previousLines.length) + output);
+		previousLines.length = output.split('\n').length;
 	};
 
 	render.clear = () => {
-		stream.write(ansiEscapes.eraseLines(previousLineCount));
+		stream.write(ansiEscapes.eraseLines(previousLines.length));
 		previousOutput = '';
-		previousLineCount = 0;
+		previousLines = [];
 	};
 
 	render.done = () => {
 		previousOutput = '';
-		previousLineCount = 0;
+		previousLines = [];
 
 		if (!showCursor) {
 			cliCursor.show();
@@ -49,7 +49,7 @@ const create = (stream: Writable, {showCursor = false} = {}): LogUpdate => {
 	render.sync = (str: string) => {
 		const output = str + '\n';
 		previousOutput = output;
-		previousLineCount = output.split('\n').length;
+		previousLines = output.split('\n');
 	};
 
 	return render;
