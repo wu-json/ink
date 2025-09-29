@@ -25,7 +25,7 @@ const create = (stream: Writable, {showCursor = false} = {}): LogUpdate => {
 			return;
 		}
 
-		const previousLineCount = previousLines.length
+		const previousLineCount = previousLines.length;
 		const lines = output.split('\n');
 		const lineCount = lines.length;
 
@@ -33,23 +33,26 @@ const create = (stream: Writable, {showCursor = false} = {}): LogUpdate => {
 			stream.write(ansiEscapes.eraseLines(previousLineCount) + output);
 			previousOutput = output;
 			previousLines = lines;
-			return
+			return;
 		}
 
 		// Clear any lines if necessary (only if output has less lines than previous)
 		if (lineCount < previousLineCount) {
-			stream.write(ansiEscapes.eraseLines(previousLineCount - lineCount) + ansiEscapes.cursorUp(lineCount - 1))
-		}else {
-			stream.write(ansiEscapes.cursorUp(previousLineCount))
+			stream.write(
+				ansiEscapes.eraseLines(previousLineCount - lineCount) +
+					ansiEscapes.cursorUp(lineCount - 1),
+			);
+		} else {
+			stream.write(ansiEscapes.cursorUp(previousLineCount));
 		}
 
 		for (let i = 0; i < lineCount; i++) {
 			// Do not write line if content did not change
 			if (lines[i] === previousLines[i]) {
-				stream.write(ansiEscapes.cursorNextLine)
-				continue
+				stream.write(ansiEscapes.cursorNextLine);
+				continue;
 			}
-			stream.write(ansiEscapes.eraseLine + lines[i] + '\n')
+			stream.write(ansiEscapes.eraseLine + lines[i] + '\n');
 		}
 
 		previousOutput = output;
