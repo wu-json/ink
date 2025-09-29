@@ -25,19 +25,22 @@ const create = (stream: Writable, {showCursor = false} = {}): LogUpdate => {
 			return;
 		}
 
-		const previousLinesCount = previousLines.length
+		const previousLineCount = previousLines.length
 		const lines = output.split('\n');
-		const linesCount = lines.length;
+		const lineCount = lines.length;
 
-		if (linesCount === 0 || previousLinesCount === 0) {
-			stream.write(ansiEscapes.eraseLines(previousLinesCount) + output);
+		if (lineCount === 0 || previousLineCount === 0) {
+			stream.write(ansiEscapes.eraseLines(previousLineCount) + output);
 			previousOutput = output;
 			previousLines = lines;
 			return
 		}
 
+		// Clear any lines if necessary (only if output has less lines than previous)
+
+
 		// TODO(wu-json): incremental render
-		stream.write(ansiEscapes.eraseLines(previousLinesCount) + output);
+		stream.write(ansiEscapes.eraseLines(previousLineCount) + output);
 		previousOutput = output;
 		previousLines = lines;
 	};
