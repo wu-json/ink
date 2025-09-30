@@ -47,7 +47,7 @@ const create = (stream: Writable, {showCursor = false} = {}): LogUpdate => {
 		// Clear extra lines if the current content's line count is lower than the previous.
 		if (lineCount < previousLineCount) {
 			buffer.push(
-				ansiEscapes.eraseLines(previousLineCount - lineCount+1),
+				ansiEscapes.eraseLines(previousLineCount - lineCount + 1),
 				ansiEscapes.cursorUp(lineCount - 1),
 			);
 		} else {
@@ -62,10 +62,12 @@ const create = (stream: Writable, {showCursor = false} = {}): LogUpdate => {
 			}
 
 			if (i === lineCount - 1) {
-				break
+				break;
 			}
 
-			buffer.push(ansiEscapes.eraseLine + (lines[i] ?? '') + ansiEscapes.cursorNextLine);
+			buffer.push(
+				ansiEscapes.eraseLine + (lines[i] ?? '') + ansiEscapes.cursorNextLine,
+			);
 		}
 
 		commitBuffer();
