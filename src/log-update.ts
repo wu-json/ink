@@ -36,7 +36,13 @@ const create = (stream: Writable, {showCursor = false} = {}): LogUpdate => {
 			return;
 		}
 
+		// We aggregate all stream.write commands for incremental rendering into a single stream.write call.
+		// This ensures that we respect the assumption that each render call writes to stdout once, which is
+		// an assumption made by features like maxFps.
 		const buffer: string[] = [];
+		const commitBuffer = () => {
+			stream.write(buffer.join(''));
+		};
 
 		// Clear any lines if necessary (only if output has less lines than previous)
 		if (lineCount < previousLineCount) {
@@ -58,7 +64,7 @@ const create = (stream: Writable, {showCursor = false} = {}): LogUpdate => {
 			buffer.push(ansiEscapes.eraseLine, lines[i] ?? '', '\n');
 		}
 
-		stream.write(buffer.join(''));
+		commitBuffer();
 
 		previousOutput = output;
 		previousLines = lines;
