@@ -126,12 +126,12 @@ test.serial('erase screen where state changes', async t => {
 	await ps.waitForExit();
 
 	const lastFrame = ps.output.split(ansiEscapes.cursorHide).at(-1);
-	if (!lastFrame){
-		t.fail("lastFrame is undefined")
-		return
+	if (!lastFrame) {
+		t.fail('lastFrame is undefined');
+		return;
 	}
 
-	const lastFrameContent = stripAnsi(lastFrame)
+	const lastFrameContent = stripAnsi(lastFrame);
 
 	for (const letter of ['A', 'B', 'C']) {
 		t.false(lastFrameContent.includes(letter));
