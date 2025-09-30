@@ -61,8 +61,7 @@ const create = (stream: Writable, {showCursor = false} = {}): LogUpdate => {
 				continue;
 			}
 
-			const suffix = i === lineCount - 1 ? '' : '\n';
-			buffer.push(ansiEscapes.eraseLine + (lines[i] ?? '') + suffix);
+			buffer.push(ansiEscapes.eraseLine + (lines[i] ?? '') + ansiEscapes.cursorNextLine);
 		}
 
 		commitBuffer();
