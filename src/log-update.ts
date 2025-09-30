@@ -62,7 +62,6 @@ const create = (stream: Writable, {showCursor = false} = {}): LogUpdate => {
 			}
 
 			if (i === lineCount - 1) {
-				buffer.push(ansiEscapes.eraseLine)
 				break
 			}
 
