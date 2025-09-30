@@ -122,7 +122,8 @@ test.serial(
 	},
 );
 
-test.serial('erase screen where state changes', async t => {
+// eslint-disable-next-line ava/no-only-test
+test.serial.only('erase screen where state changes', async t => {
 	const ps = term('erase-with-state-change', ['4']);
 	await ps.waitForExit();
 

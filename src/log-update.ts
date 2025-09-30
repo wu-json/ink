@@ -9,12 +9,6 @@ export type LogUpdate = {
 	(str: string): void;
 };
 
-/*
- * This is an OSC delimiter we print at the end of each render. This makes identifying frames
- * convenient for tests.
- */
-export const frameDelimeter = '\u001B_ink_frm\u001B\\';
-
 const create = (stream: Writable, {showCursor = false} = {}): LogUpdate => {
 	let previousLines: string[] = [];
 	let previousOutput = '';
@@ -37,7 +31,7 @@ const create = (stream: Writable, {showCursor = false} = {}): LogUpdate => {
 
 		if (lineCount === 0 || previousLineCount === 0) {
 			stream.write(
-				ansiEscapes.eraseLines(previousLineCount) + output + frameDelimeter,
+				ansiEscapes.eraseLines(previousLineCount) + output,
 			);
 			previousOutput = output;
 			previousLines = lines;
@@ -63,8 +57,6 @@ const create = (stream: Writable, {showCursor = false} = {}): LogUpdate => {
 
 			stream.write(ansiEscapes.eraseLine + lines[i] + '\n');
 		}
-
-		stream.write(frameDelimeter);
 
 		previousOutput = output;
 		previousLines = lines;
