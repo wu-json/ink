@@ -36,9 +36,7 @@ const create = (stream: Writable, {showCursor = false} = {}): LogUpdate => {
 			return;
 		}
 
-		// We aggregate all stream.write commands for incremental rendering into a single stream.write call.
-		// This ensures that we respect the assumption that each render call writes to stdout once, which is
-		// an assumption made by features like maxFps.
+		// We aggregate all chunks for incremental rendering into a buffer, and then write them to stdout at the end.
 		const buffer: string[] = [];
 		const commitBuffer = () => {
 			stream.write(buffer.join(''));
