@@ -66,3 +66,13 @@ test('incremental render when output grows', t => {
 	t.true(secondCall.includes('Line 3')); // Adds new line
 	t.false(secondCall.includes('Line 1')); // Doesn't rewrite unchanged
 });
+
+test('single write call with multiple surgical updates', t => {
+	const stdout = createStdout();
+	const render = logUpdate.create(stdout);
+
+	render('Line 1\nLine 2\nLine 3\nLine 4\nLine 5\nLine 6\nLine 7\nLine 8\nLine 9\nLine 10');
+	render('Line 1\nUpdated 2\nLine 3\nUpdated 4\nLine 5\nUpdated 6\nLine 7\nUpdated 8\nLine 9\nUpdated 10');
+
+	t.is((stdout.write as any).callCount, 2); // Only 2 writes total (initial + update)
+});
