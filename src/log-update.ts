@@ -44,7 +44,7 @@ const create = (stream: Writable, {showCursor = false} = {}): LogUpdate => {
 			stream.write(buffer.join(''));
 		};
 
-		// Clear any lines if necessary (only if output has less lines than previous)
+		// Clear extra lines if the current content's line count is lower than the previous.
 		if (lineCount < previousLineCount) {
 			buffer.push(
 				ansiEscapes.eraseLines(previousLineCount - lineCount),
@@ -55,7 +55,7 @@ const create = (stream: Writable, {showCursor = false} = {}): LogUpdate => {
 		}
 
 		for (let i = 0; i < lineCount; i++) {
-			// Do not write line if content did not change
+			// We do not write lines if the contents are the same. This prevents flickering during renders.
 			if (lines[i] === previousLines[i]) {
 				buffer.push(ansiEscapes.cursorNextLine);
 				continue;
