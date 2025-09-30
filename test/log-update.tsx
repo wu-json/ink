@@ -41,3 +41,28 @@ test('incremental render (surgical updates)', t => {
 	t.false(secondCall.includes('Line 1')); // Doesn't rewrite unchanged
 	t.false(secondCall.includes('Line 3')); // Doesn't rewrite unchanged
 });
+
+test('clears extra lines when output shrinks', t => {
+	const stdout = createStdout();
+	const render = logUpdate.create(stdout);
+
+	render('Line 1\nLine 2\nLine 3');
+	render('Line 1');
+
+	const secondCall = (stdout.write as any).secondCall.args[0] as string;
+	t.true(secondCall.includes(ansiEscapes.eraseLines(2))); // Erases 2 extra lines
+});
+
+test('incremental render when output grows', t => {
+	const stdout = createStdout();
+	const render = logUpdate.create(stdout);
+
+	render('Line 1');
+	render('Line 1\nLine 2\nLine 3');
+
+	const secondCall = (stdout.write as any).secondCall.args[0] as string;
+	t.true(secondCall.includes(ansiEscapes.cursorNextLine)); // Skips unchanged first line
+	t.true(secondCall.includes('Line 2')); // Adds new line
+	t.true(secondCall.includes('Line 3')); // Adds new line
+	t.false(secondCall.includes('Line 1')); // Doesn't rewrite unchanged
+});
